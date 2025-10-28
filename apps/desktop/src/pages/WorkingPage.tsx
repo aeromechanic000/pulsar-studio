@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useAppStore } from '../stores/useAppStore';
-import { RocketIcon, ChatIcon, LightningIcon, PlusIcon, BriefcaseIcon, SettingsIcon, BookIcon, BrainIcon, TargetIcon, GearIcon } from '../components/Icons';
+import { ChatIcon, LightningIcon, PlusIcon, BriefcaseIcon, SettingsIcon, BookIcon, BrainIcon, TargetIcon, GearIcon } from '../components/Icons';
+import { invoke } from '@tauri-apps/api/tauri';
 import ThreadConfigModal from '../components/ThreadConfigModal';
 import { ThreadConfig } from '../types';
 
@@ -115,7 +116,7 @@ const WorkingPage: React.FC = () => {
               boxShadow: 'var(--shadow-xl)',
               transition: 'transform 300ms ease',
             }}>
-              <RocketIcon size={56} />
+              <img src="/icons/icon.png" alt="Pulsar Studio" style={{ width: '96px', height: '96px' }} />
             </div>
           </div>
 
@@ -190,7 +191,7 @@ const WorkingPage: React.FC = () => {
                 marginTop: 'var(--spacing-lg)',
                 fontSize: '14px'
               }}>
-                💡 Tip: You can also use the <strong>+ New Thread</strong> button in the sidebar
+                💡 Tip: You can also use the <strong>+ New</strong> button in the sidebar
               </p>
             </div>
           </div>
@@ -534,7 +535,7 @@ const WorkingPage: React.FC = () => {
               ) : (
                 <span style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-xs)' }}>
                   <span>Send</span>
-                  <RocketIcon size={16} />
+                  <ChatIcon size={16} />
                 </span>
               )}
             </button>
