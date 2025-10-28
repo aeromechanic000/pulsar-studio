@@ -1,0 +1,325 @@
+{
+  "app": {
+    "title": "Pulsar Studio"
+  },
+  "sidebar": {
+    "working": "Working",
+    "settings": "Settings",
+    "guides": "Guides",
+    "knowledge": "Knowledge",
+    "actions": "Actions",
+    "threads": "Threads",
+    "newThread": "+ New",
+    "noThreadsYet": "No threads yet. Create one to get started.",
+    "createFirstThread": "Use the button above to create your first agent thread.",
+    "expandSidebar": "Expand sidebar",
+    "collapseSidebar": "Collapse sidebar",
+    "createNewThread": "Create new thread"
+  },
+  "settings": {
+    "title": "Settings",
+    "llm": {
+      "title": "LLM Providers",
+      "addInstance": "Add Instance",
+      "selectProvider": "Select Provider",
+      "providerName": "Provider Name",
+      "baseUrl": "Base URL",
+      "apiKey": "API Key",
+      "model": "Model",
+      "temperature": "Temperature",
+      "maxTokens": "Max Tokens",
+      "timeout": "Timeout (seconds)",
+      "enableThinking": "Enable Thinking",
+      "save": "Save",
+      "cancel": "Cancel",
+      "edit": "Edit",
+      "delete": "Delete",
+      "deleteConfirm": "Are you sure you want to delete this instance?",
+      "test": "Test Connection",
+      "testSuccess": "Connection successful!",
+      "testFailed": "Connection failed: {{error}}",
+      "instances": {
+        "openai": "OpenAI",
+        "ollama": "Ollama",
+        "anthropic": "Anthropic",
+        "custom": "Custom"
+      }
+    },
+    "appearance": {
+      "title": "Appearance & Language",
+      "language": "Language",
+      "theme": "Theme",
+      "themeOptions": {
+        "light": "Light",
+        "dark": "Dark",
+        "system": "System"
+      },
+      "languageOptions": {
+        "en": "English",
+        "zh": "中文"
+      }
+    }
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success",
+    "save": "Save",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "delete": "Delete",
+    "edit": "Edit",
+    "add": "Add",
+    "search": "Search",
+    "clear": "Clear",
+    "close": "Close"
+  },
+  "ui": {
+    "loadingInstances": "Loading LLM instances...",
+    "noInstancesYet": "No LLM Instances Yet",
+    "addFirstInstance": "Add your first LLM instance to start configuring AI models for your tasks",
+    "themeDescriptions": {
+      "system": "Theme will automatically match your system preference (light/dark mode).",
+      "dark": "Dark theme is enabled. This may be easier on the eyes in low-light environments.",
+      "light": "Light theme is enabled. This provides a bright, clean interface."
+    },
+    "taskAndPlan": "Task & Plan",
+    "noActiveTask": "No active task",
+    "selectOrCreateThread": "Select or create a thread to start working on a task.",
+    "generatedFiles": "Generated Files",
+    "noFilesGenerated": "No files generated yet",
+    "filesWillAppearHere": "Files created by the agent will appear here for easy access."
+  },
+  "workingPage": {
+    "welcome": "Welcome to Pulsar Studio",
+    "welcomeSubtitle": "Your AI-powered development assistant",
+    "createFirstThread": "Create Your First Thread",
+    "readyForRequest": "Ready for your first request",
+    "noThreadsMessage": "No threads yet. Create one to get started.",
+    "createThreadDescription": "Start a new conversation thread with the AI assistant.",
+    "configuration": {
+      "title": "Configuration",
+      "mode": "Mode",
+      "plannerLLM": "Planner LLM",
+      "deciderLLM": "Decider LLM",
+      "workingDirectory": "Working Directory",
+      "knowledge": "Knowledge",
+      "guides": "Guides",
+      "actions": "Actions",
+      "interactive": "Interactive",
+      "auto": "Auto",
+      "noKnowledgeSelected": "No knowledge selected",
+      "noGuidesSelected": "No guides selected",
+      "noActionsSelected": "No actions selected"
+    },
+    "chat": {
+      "placeholder": "What would you like to accomplish today?",
+      "send": "Send",
+      "processing": "Processing...",
+      "error": "Error",
+      "retry": "Retry",
+      "stop": "Stop"
+    },
+    "status": {
+      "idle": "Ready",
+      "planning": "Planning...",
+      "executing": "Executing...",
+      "completed": "Completed",
+      "failed": "Failed"
+    }
+  },
+  "knowledgePage": {
+    "title": "Knowledge Base",
+    "subtitle": "Manage your knowledge entries and documentation",
+    "addKnowledge": "+ Add Knowledge",
+    "noKnowledge": "No Knowledge Entries",
+    "createFirstKnowledge": "Create your first knowledge entry",
+    "createFirstKnowledgeDescription": "Add documentation, references, and information that the AI can use to help with your tasks.",
+    "loading": "Loading knowledge...",
+    "entries": {
+      "count_one": "{{count}} entry",
+      "count_other": "{{count}} entries"
+    },
+    "form": {
+      "createTitle": "Create New Knowledge",
+      "editTitle": "Edit Knowledge",
+      "name": "Name",
+      "version": "Version",
+      "domain": "Domain",
+      "information": "Knowledge Information",
+      "entries": "Knowledge Entries",
+      "addEntry": "+ Add Entry",
+      "entryName": "Entry Name",
+      "entryDescription": "Entry Description",
+      "entryContent": "Entry Content",
+      "preview": "Preview",
+      "characters": "characters",
+      "noEntriesYet": "No entries yet. Click \"Add Entry\" to create your first knowledge entry."
+    },
+    "modal": {
+      "cancel": "Cancel",
+      "save": "Save Knowledge",
+      "deleteConfirm": "Are you sure you want to delete this knowledge entry?",
+      "deleteSuccess": "Knowledge deleted successfully",
+      "saveSuccess": "Knowledge saved successfully"
+    }
+  },
+  "actionsPage": {
+    "title": "Available Actions",
+    "subtitle": "Manage and monitor available actions for the agent",
+    "importAction": "+ Import Action",
+    "noActions": "No Actions Imported",
+    "importFirstAction": "Import your first action",
+    "importFirstActionDescription": "Import action directories that the agent can use to perform tasks.",
+    "loading": "Loading actions...",
+    "search": "Search actions by name or description...",
+    "actionsFound": "action{{count, plural, =1 {} other {s}}} found",
+    "noActionsMatch": "No Actions Match",
+    "noMatchDescription": "Try adjusting your search or filter criteria",
+    "filter": {
+      "all": "All Status",
+      "healthy": "Healthy",
+      "error": "Error",
+      "disabled": "Disabled"
+    },
+    "status": {
+      "healthy": "✅ Healthy",
+      "error": "❌ Error",
+      "disabled": "⚠️ Disabled",
+      "clearError": "Clear Error"
+    },
+    "details": {
+      "name": "Name",
+      "description": "Description",
+      "arguments": "Arguments",
+      "timeout": "Timeout",
+      "tags": "Tags",
+      "status": "Status",
+      "lastChecked": "Last Checked",
+      "version": "Version",
+      "lastError": "Last Error",
+      "directory": "Directory",
+      "errors": "Errors",
+      "type": "Type"
+    },
+    "modal": {
+      "delete": "Delete Action",
+      "deleteConfirm": "Are you sure you want to delete the action \"{{actionName}}\"? This will remove the entire action directory and cannot be undone.",
+      "deleteAction": "Delete Action",
+      "deleteSuccess": "Action deleted successfully",
+      "clearErrorSuccess": "Error cleared successfully"
+    }
+  },
+  "guidesPage": {
+    "title": "Planning Guides",
+    "subtitle": "Configure planning guides for complex tasks",
+    "addGuide": "+ Add Guide",
+    "noGuides": "No Planning Guides",
+    "createFirstGuide": "Create your first planning guide",
+    "createFirstGuideDescription": "Create structured guides that help the AI plan and execute complex multi-step tasks.",
+    "loading": "Loading guides...",
+    "entries": {
+      "count_one": "{{count}} entry",
+      "count_other": "{{count}} entries"
+    },
+    "form": {
+      "createTitle": "Create New Guide",
+      "editTitle": "Edit Guide",
+      "name": "Name",
+      "version": "Version",
+      "domain": "Domain",
+      "information": "Guide Information",
+      "entries": "Guide Entries",
+      "addEntry": "+ Add Entry",
+      "addStep": "+ Add Step",
+      "entryName": "Entry Name",
+      "entryDescription": "Entry Description",
+      "planningSteps": "Planning Steps",
+      "stepDescription": "Step Description",
+      "moveUp": "Move Up",
+      "moveDown": "Move Down",
+      "removeStep": "Remove Step",
+      "noEntriesYet": "No entries yet. Click \"Add Entry\" to create your first guide entry.",
+      "noPlanningStepsYet": "No planning steps yet"
+    },
+    "modal": {
+      "cancel": "Cancel",
+      "save": "Save Guide",
+      "deleteConfirm": "Are you sure you want to delete this guide?",
+      "deleteSuccess": "Guide deleted successfully",
+      "saveSuccess": "Guide saved successfully"
+    }
+  },
+  "forms": {
+    "name": "Name",
+    "version": "Version",
+    "domain": "Domain",
+    "description": "Description",
+    "required": "Required",
+    "optional": "Optional",
+    "save": "Save",
+    "cancel": "Cancel",
+    "edit": "Edit",
+    "delete": "Delete",
+    "add": "Add",
+    "remove": "Remove",
+    "create": "Create",
+    "update": "Update"
+  },
+  "modals": {
+    "create": "Create New",
+    "edit": "Edit",
+    "delete": "Delete",
+    "confirm": "Confirm",
+    "success": "Success",
+    "error": "Error",
+    "close": "Close",
+    "cancel": "Cancel",
+    "save": "Save",
+    "loading": "Loading...",
+    "processing": "Processing..."
+  },
+  "validation": {
+    "required": "This field is required",
+    "invalidName": "Please enter a valid name",
+    "invalidVersion": "Please enter a valid version",
+    "minLength": "Must be at least {{min}} characters",
+    "maxLength": "Must be no more than {{max}} characters"
+  },
+  "threadConfig": {
+    "createTitle": "Create New Thread",
+    "editTitle": "Configure Thread",
+    "threadName": "Thread Name",
+    "threadNamePlaceholder": "Enter a descriptive name for this thread",
+    "selectPlannerLLM": "Select an LLM for planning",
+    "selectDeciderLLM": "Select an LLM for decision making",
+    "workingDirectory": "Working Directory",
+    "workingDirectoryPlaceholder": "Enter the working directory path",
+    "browse": "Browse",
+    "knowledgeSources": "Knowledge Sources",
+    "planningGuides": "Planning Guides",
+    "availableActions": "Available Actions",
+    "noKnowledgeTitle": "No Knowledge Sources Available",
+    "noKnowledgeDescription": "Create knowledge entries in the Knowledge page to provide your agent with contextual information.",
+    "noGuidesTitle": "No Planning Guides Available",
+    "noGuidesDescription": "Create planning guides in the Guides page to help your agent structure complex tasks effectively.",
+    "noActionsTitle": "No Actions Available",
+    "noActionsDescription": "Import action directories in the Actions page to provide your agent with executable capabilities.",
+    "goToKnowledge": "Go to Knowledge",
+    "goToGuides": "Go to Guides",
+    "goToActions": "Go to Actions",
+    "plannerLLMDesc": "This LLM will be used for creating and updating plans",
+    "deciderLLMDesc": "This LLM will be used for choosing next actions and decisions",
+    "directoryAccessible": "Directory is accessible with full permissions",
+    "directoryValidationFailed": "Directory validation failed",
+    "selectDirectory": "Select Working Directory",
+    "requiredFields": "* Required fields",
+    "alerts": {
+      "fillRequiredFields": "Please fill in all required fields",
+      "selectWorkingDirectory": "Please select a working directory",
+      "selectValidDirectory": "Please select a valid working directory with write permissions",
+      "saveFailed": "Failed to save configuration",
+      "directoryBrowseFailed": "Failed to open directory browser"
+    }
+  }
+}

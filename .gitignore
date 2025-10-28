@@ -1,0 +1,14 @@
+._*
+.env
+.venv/
+.fslckout
+.DS_Store
+.vscode/
+.idea/
+debug/
+dist/
+node_modules/
+build/
+__pycache__/
+.python-version
+uv.lock

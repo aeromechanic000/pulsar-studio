@@ -1,0 +1,1020 @@
+import React, { useState, useEffect } from 'react';
+import { invoke } from '@tauri-apps/api/tauri';
+
+interface LLMInstance {
+  id?: string;
+  name: string;
+  provider: 'openai_compatible' | 'ollama';
+  base_url: string;
+  model: string;
+  api_key?: string;
+  temperature: number;
+  max_tokens?: number;
+  think: boolean;
+  alias: string;
+}
+
+const SettingsPage: React.FC = () => {
+  const [instances, setInstances] = useState<LLMInstance[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [testingInstance, setTestingInstance] = useState<string | null>(null);
+  const [testResults, setTestResults] = useState<Record<string, any>>({});
+
+  const [showAddForm, setShowAddForm] = useState(false);
+  const [editingInstance, setEditingInstance] = useState<string | null>(null);
+  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [newInstance, setNewInstance] = useState<Partial<LLMInstance>>({
+    name: '',
+    provider: 'openai_compatible',
+    base_url: '',
+    model: '',
+    temperature: 0.7,
+    max_tokens: 4000,
+    think: false,
+    alias: ''
+  });
+
+  // Instance templates
+  const instanceTemplates = [
+    {
+      name: 'OpenAI GPT-4',
+      template: {
+        name: 'OpenAI GPT-4',
+        provider: 'openai_compatible' as const,
+        base_url: 'https://api.openai.com/v1',
+        model: 'gpt-4',
+        temperature: 0.7,
+        max_tokens: 4000,
+        think: false,
+        alias: 'openai-gpt4'
+      }
+    },
+    {
+      name: 'OpenAI GPT-3.5 Turbo',
+      template: {
+        name: 'OpenAI GPT-3.5 Turbo',
+        provider: 'openai_compatible' as const,
+        base_url: 'https://api.openai.com/v1',
+        model: 'gpt-3.5-turbo',
+        temperature: 0.7,
+        max_tokens: 4000,
+        think: false,
+        alias: 'openai-gpt35'
+      }
+    },
+    {
+      name: 'Local Ollama (Llama 3.2 3B)',
+      template: {
+        name: 'Local Ollama (Llama 3.2 3B)',
+        provider: 'ollama' as const,
+        base_url: 'http://localhost:11434',
+        model: 'llama3.2:3b',
+        temperature: 0.5,
+        max_tokens: 2000,
+        think: true,
+        alias: 'local-llama32'
+      }
+    },
+    {
+      name: 'Anthropic Claude (via proxy)',
+      template: {
+        name: 'Anthropic Claude (via proxy)',
+        provider: 'openai_compatible' as const,
+        base_url: 'https://api.anthropic-proxy.com/v1',
+        model: 'claude-3-sonnet-20241022',
+        temperature: 0.7,
+        max_tokens: 4000,
+        think: true,
+        alias: 'claude-sonnet'
+      }
+    },
+    {
+      name: 'Google Gemini (via proxy)',
+      template: {
+        name: 'Google Gemini (via proxy)',
+        provider: 'openai_compatible' as const,
+        base_url: 'https://generativelanguage.googleapis.com/v1beta/openai',
+        model: 'gemini-pro',
+        temperature: 0.7,
+        max_tokens: 4000,
+        think: false,
+        alias: 'gemini-pro'
+      }
+    }
+  ];
+
+  // Load instances on component mount
+  useEffect(() => {
+    loadInstances();
+  }, []);
+
+  const loadInstances = async () => {
+    try {
+      console.log('Loading LLM instances...');
+      setLoading(true);
+      const loadedInstances = await invoke<LLMInstance[]>('get_all_llm_providers');
+      console.log('Loaded instances:', loadedInstances);
+      setInstances(loadedInstances);
+      setError(null);
+    } catch (err) {
+      console.error('Failed to load instances:', err);
+      setError(`Failed to load LLM instances: ${err}`);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const validateInstance = (instance: Partial<LLMInstance>): Record<string, string> => {
+    const newErrors: Record<string, string> = {};
+
+    if (!instance.name || instance.name.trim() === '') {
+      newErrors.name = 'Name is required';
+    }
+
+    if (!instance.alias || instance.alias.trim() === '') {
+      newErrors.alias = 'Alias is required';
+    }
+
+    if (!instance.base_url || instance.base_url.trim() === '') {
+      newErrors.base_url = 'Base URL is required';
+    } else {
+      try {
+        new URL(instance.base_url);
+      } catch {
+        newErrors.base_url = 'Invalid URL format';
+      }
+    }
+
+    if (!instance.model || instance.model.trim() === '') {
+      newErrors.model = 'Model is required';
+    }
+
+    if (instance.temperature !== undefined && (instance.temperature < 0 || instance.temperature > 2)) {
+      newErrors.temperature = 'Temperature must be between 0 and 2';
+    }
+
+    if (instance.max_tokens !== undefined && instance.max_tokens !== undefined && instance.max_tokens <= 0) {
+      newErrors.max_tokens = 'Max tokens must be greater than 0';
+    }
+
+    if (instance.provider === 'openai_compatible' && (!instance.api_key || instance.api_key.trim() === '')) {
+      newErrors.api_key = 'API key is required for OpenAI compatible instances';
+    }
+
+    return newErrors;
+  };
+
+  const addInstance = async () => {
+    const validationErrors = validateInstance(newInstance);
+    setErrors(validationErrors);
+
+    if (Object.keys(validationErrors).length === 0) {
+      try {
+        const instance: LLMInstance = {
+          name: newInstance.name!,
+          alias: newInstance.alias!,
+          provider: newInstance.provider || 'openai_compatible',
+          base_url: newInstance.base_url!,
+          model: newInstance.model!,
+          temperature: newInstance.temperature || 0.7,
+          max_tokens: newInstance.max_tokens,
+          think: newInstance.think || false,
+          api_key: newInstance.api_key
+        };
+
+        console.log('Adding instance:', instance);
+        await invoke('add_llm_provider', { provider: instance });
+        console.log('Instance added successfully');
+        await loadInstances(); // Reload the list
+
+        // Reset form
+        setNewInstance({
+          name: '',
+          provider: 'openai_compatible',
+          base_url: '',
+          model: '',
+          temperature: 0.7,
+          max_tokens: 4000,
+          think: false,
+          alias: ''
+        });
+        setShowAddForm(false);
+        setErrors({});
+      } catch (err) {
+        console.error('Failed to add instance:', err);
+        setError(`Failed to add LLM instance: ${err}`);
+      }
+    }
+  };
+
+  const deleteInstance = async (id: string) => {
+    if (confirm('Are you sure you want to delete this instance?')) {
+      try {
+        await invoke('delete_llm_provider', { id });
+        await loadInstances(); // Reload the list
+      } catch (err) {
+        console.error('Failed to delete instance:', err);
+        setError('Failed to delete LLM instance');
+      }
+    }
+  };
+
+  const startEditInstance = (instance: LLMInstance) => {
+    setEditingInstance(instance.alias);
+    setNewInstance({
+      name: instance.name,
+      alias: instance.alias,
+      provider: instance.provider,
+      base_url: instance.base_url,
+      model: instance.model,
+      api_key: instance.api_key || '',
+      temperature: instance.temperature,
+      max_tokens: instance.max_tokens,
+      think: instance.think
+    });
+    setShowAddForm(true);
+    setErrors({});
+    setError('');
+  };
+
+  const updateProvider = async () => {
+    if (!editingProvider) return;
+
+    const validationErrors = validateProvider(newProvider);
+    setErrors(validationErrors);
+
+    if (Object.keys(validationErrors).length === 0) {
+      try {
+        const provider: LLMProvider = {
+          name: newProvider.name!,
+          alias: newProvider.alias!,
+          provider: newProvider.provider || 'openai_compatible',
+          base_url: newProvider.base_url!,
+          model: newProvider.model!,
+          temperature: newProvider.temperature || 0.7,
+          max_tokens: newProvider.max_tokens,
+          think: newProvider.think || false,
+          api_key: newProvider.api_key
+        };
+
+        await invoke('update_llm_provider', { id: editingProvider, provider });
+        await loadProviders();
+        cancelEdit();
+      } catch (err) {
+        console.error('Failed to update provider:', err);
+        setError('Failed to update LLM provider');
+      }
+    }
+  };
+
+  const cancelEdit = () => {
+    setEditingProvider(null);
+    setShowAddForm(false);
+    setNewProvider({
+      name: '',
+      provider: 'openai_compatible',
+      base_url: '',
+      model: '',
+      temperature: 0.7,
+      max_tokens: 4000,
+      think: false,
+      alias: ''
+    });
+    setErrors({});
+    setError('');
+  };
+
+  const testProvider = async (provider: LLMProvider) => {
+    setTestingProvider(provider.alias);
+    try {
+      console.log('Testing provider:', provider);
+      const result = await invoke('test_llm_provider', { provider });
+      console.log('Test result:', result);
+      setTestResults(prev => ({ ...prev, [provider.alias]: result }));
+    } catch (err) {
+      console.error('Failed to test provider:', err);
+      setTestResults(prev => ({
+        ...prev,
+        [provider.alias]: {
+          success: false,
+          error: `${err}`
+        }
+      }));
+    } finally {
+      setTestingProvider(null);
+    }
+  };
+
+  const applyTemplate = (template: any) => {
+    setNewProvider(template.template);
+    setShowAddForm(true);
+    setEditingProvider(null);
+    setErrors({});
+    setError('');
+  };
+
+  const exportProviders = async () => {
+    try {
+      console.log('Exporting providers...');
+      const exportData = await invoke<string>('export_providers');
+
+      // Create a download link
+      const blob = new Blob([exportData], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `pulsar-studio-providers-${new Date().toISOString().split('T')[0]}.json`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+
+      console.log('Providers exported successfully');
+    } catch (err) {
+      console.error('Failed to export providers:', err);
+      setError(`Failed to export providers: ${err}`);
+    }
+  };
+
+  const importProviders = async () => {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = '.json';
+
+    input.onchange = async (e) => {
+      const file = (e.target as HTMLInputElement).files?.[0];
+      if (!file) return;
+
+      try {
+        const text = await file.text();
+        console.log('Importing providers...');
+        const importedCount = await invoke<number>('import_providers', { providersJson: text });
+        console.log(`Imported ${importedCount} providers`);
+
+        await loadProviders(); // Reload the list
+
+        // Show success message
+        setError(`Successfully imported ${importedCount} providers`);
+        setTimeout(() => setError(null), 3000);
+      } catch (err) {
+        console.error('Failed to import providers:', err);
+        setError(`Failed to import providers: ${err}`);
+      }
+    };
+
+    input.click();
+  };
+
+  return (
+    <div style={{
+      padding: '32px',
+      height: '100%',
+      display: 'flex',
+      flexDirection: 'column',
+      gap: '32px',
+      overflow: 'auto'
+    }}>
+      {/* Header */}
+      <div style={{
+        borderBottom: '1px solid #e2e8f0',
+        paddingBottom: '16px'
+      }}>
+        <h2 style={{ margin: 0, color: '#1e293b', fontSize: '20px', fontWeight: '600' }}>
+          Settings
+        </h2>
+        <p style={{ margin: '4px 0 0 0', color: '#64748b', fontSize: '14px' }}>
+          Configure LLM providers and application settings
+        </p>
+      </div>
+
+      {/* LLM Providers Section */}
+      <div style={{
+        backgroundColor: 'white',
+        border: '1px solid #e2e8f0',
+        borderRadius: '12px',
+        padding: '24px',
+        boxShadow: '0 1px 3px rgba(0,0,0,0.05)'
+      }}>
+        <div style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          marginBottom: '24px'
+        }}>
+          <h3 style={{ margin: 0, color: '#1e293b', fontSize: '16px', fontWeight: '600' }}>
+            LLM Providers
+          </h3>
+          <div style={{ display: 'flex', gap: '8px' }}>
+            <button
+              onClick={importProviders}
+              style={{
+                padding: '8px 16px',
+                backgroundColor: 'white',
+                color: '#64748b',
+                border: '1px solid #e2e8f0',
+                borderRadius: '6px',
+                fontSize: '14px',
+                fontWeight: '500',
+                cursor: 'pointer'
+              }}
+            >
+              📥 Import
+            </button>
+            <button
+              onClick={exportProviders}
+              disabled={providers.length === 0}
+              style={{
+                padding: '8px 16px',
+                backgroundColor: providers.length === 0 ? '#f1f5f9' : 'white',
+                color: providers.length === 0 ? '#94a3b8' : '#64748b',
+                border: '1px solid #e2e8f0',
+                borderRadius: '6px',
+                fontSize: '14px',
+                fontWeight: '500',
+                cursor: providers.length === 0 ? 'not-allowed' : 'pointer'
+              }}
+            >
+              📤 Export
+            </button>
+            <button
+              onClick={() => setShowAddForm(true)}
+              style={{
+                padding: '10px 20px',
+                backgroundColor: '#3b82f6',
+                color: 'white',
+                border: 'none',
+                borderRadius: '8px',
+                fontSize: '14px',
+                fontWeight: '600',
+                cursor: 'pointer',
+                boxShadow: '0 2px 4px rgba(59, 130, 246, 0.2)',
+                transition: 'all 150ms ease'
+              }}
+              onMouseOver={(e) => {
+                e.currentTarget.style.backgroundColor = '#2563eb';
+                e.currentTarget.style.transform = 'translateY(-1px)';
+                e.currentTarget.style.boxShadow = '0 4px 8px rgba(59, 130, 246, 0.3)';
+              }}
+              onMouseOut={(e) => {
+                e.currentTarget.style.backgroundColor = '#3b82f6';
+                e.currentTarget.style.transform = 'translateY(0px)';
+                e.currentTarget.style.boxShadow = '0 2px 4px rgba(59, 130, 246, 0.2)';
+              }}
+            >
+              ➕ Add New Provider
+            </button>
+          </div>
+        </div>
+
+        {/* Quick Templates */}
+        <div style={{
+          backgroundColor: '#f8fafc',
+          border: '1px solid #e2e8f0',
+          borderRadius: '8px',
+          padding: '20px',
+          marginBottom: '24px'
+        }}>
+          <h4 style={{ margin: '0 0 16px 0', color: '#1e293b', fontSize: '14px', fontWeight: '600' }}>
+            🚀 Quick Templates
+          </h4>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '8px' }}>
+            {providerTemplates.map((template) => (
+              <button
+                key={template.name}
+                onClick={() => applyTemplate(template)}
+                style={{
+                  padding: '8px 12px',
+                  border: '1px solid #e2e8f0',
+                  backgroundColor: 'white',
+                  borderRadius: '6px',
+                  fontSize: '12px',
+                  color: '#64748b',
+                  cursor: 'pointer',
+                  textAlign: 'left',
+                  transition: 'all 150ms ease'
+                }}
+                onMouseOver={(e) => {
+                  e.currentTarget.style.backgroundColor = '#f8fafc';
+                  e.currentTarget.style.borderColor = '#3b82f6';
+                  e.currentTarget.style.color = '#1e293b';
+                }}
+                onMouseOut={(e) => {
+                  e.currentTarget.style.backgroundColor = 'white';
+                  e.currentTarget.style.borderColor = '#e2e8f0';
+                  e.currentTarget.style.color = '#64748b';
+                }}
+              >
+                <div style={{ fontWeight: '500', marginBottom: '2px' }}>{template.name}</div>
+                <div style={{ fontSize: '11px', opacity: 0.7 }}>
+                  {template.template.provider === 'ollama' ? 'Local' : 'Cloud'} • {template.template.model}
+                </div>
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {showAddForm && (
+          <div style={{
+            backgroundColor: 'white',
+            border: '2px solid #3b82f6',
+            borderRadius: '12px',
+            padding: '24px',
+            marginBottom: '24px',
+            boxShadow: '0 4px 6px -1px rgba(59, 130, 246, 0.1), 0 2px 4px -1px rgba(59, 130, 246, 0.06)',
+            position: 'relative'
+          }}>
+            <div style={{
+              position: 'absolute',
+              top: '-12px',
+              left: '24px',
+              backgroundColor: '#3b82f6',
+              color: 'white',
+              padding: '4px 12px',
+              borderRadius: '16px',
+              fontSize: '12px',
+              fontWeight: '600'
+            }}>
+              {editingProvider ? '✏️ EDITING' : '➕ NEW PROVIDER'}
+            </div>
+            <h4 style={{ margin: '16px 0 20px 0', color: '#1e293b', fontSize: '18px', fontWeight: '600' }}>
+              {editingProvider ? 'Edit LLM Provider' : 'Add New LLM Provider'}
+            </h4>
+            <div style={{ display: 'grid', gap: '12px' }}>
+              <div style={{ display: 'flex', gap: '12px' }}>
+                <div style={{ flex: 1 }}>
+                  <label style={{ display: 'block', marginBottom: '4px', fontSize: '14px', fontWeight: '500', color: '#374151' }}>
+                    Name
+                  </label>
+                  <input
+                    type="text"
+                    value={newProvider.name || ''}
+                    onChange={(e) => {
+                      setNewProvider({...newProvider, name: e.target.value});
+                      if (errors.name) {
+                        setErrors({...errors, name: ''});
+                      }
+                    }}
+                    style={{
+                      width: '100%',
+                      padding: '8px 12px',
+                      border: errors.name ? '1px solid #ef4444' : '1px solid #e2e8f0',
+                      borderRadius: '4px',
+                      fontSize: '14px'
+                    }}
+                    placeholder="e.g., GPT-4"
+                  />
+                  {errors.name && (
+                    <div style={{ color: '#ef4444', fontSize: '12px', marginTop: '4px' }}>
+                      {errors.name}
+                    </div>
+                  )}
+                </div>
+                <div style={{ flex: 1 }}>
+                  <label style={{ display: 'block', marginBottom: '4px', fontSize: '14px', fontWeight: '500', color: '#374151' }}>
+                    Alias
+                  </label>
+                  <input
+                    type="text"
+                    value={newProvider.alias || ''}
+                    onChange={(e) => {
+                      setNewProvider({...newProvider, alias: e.target.value});
+                      if (errors.alias) {
+                        setErrors({...errors, alias: ''});
+                      }
+                    }}
+                    style={{
+                      width: '100%',
+                      padding: '8px 12px',
+                      border: errors.alias ? '1px solid #ef4444' : '1px solid #e2e8f0',
+                      borderRadius: '4px',
+                      fontSize: '14px'
+                    }}
+                    placeholder="e.g., gpt-4"
+                  />
+                  {errors.alias && (
+                    <div style={{ color: '#ef4444', fontSize: '12px', marginTop: '4px' }}>
+                      {errors.alias}
+                    </div>
+                  )}
+                </div>
+              </div>
+              <div style={{ display: 'flex', gap: '12px' }}>
+                <div style={{ flex: 1 }}>
+                  <label style={{ display: 'block', marginBottom: '4px', fontSize: '14px', fontWeight: '500', color: '#374151' }}>
+                    Provider
+                  </label>
+                  <select
+                    value={newProvider.provider}
+                    onChange={(e) => setNewProvider({...newProvider, provider: e.target.value as 'openai_compatible' | 'ollama'})}
+                    style={{
+                      width: '100%',
+                      padding: '8px 12px',
+                      border: '1px solid #e2e8f0',
+                      borderRadius: '4px',
+                      fontSize: '14px'
+                    }}
+                  >
+                    <option value="openai_compatible">OpenAI Compatible</option>
+                    <option value="ollama">Ollama</option>
+                  </select>
+                </div>
+              </div>
+              <div style={{ display: 'flex', gap: '12px' }}>
+                <div style={{ flex: 2 }}>
+                  <label style={{ display: 'block', marginBottom: '4px', fontSize: '14px', fontWeight: '500', color: '#374151' }}>
+                    Base URL
+                  </label>
+                  <input
+                    type="text"
+                    value={newProvider.base_url || ''}
+                    onChange={(e) => {
+                      setNewProvider({...newProvider, base_url: e.target.value});
+                      if (errors.base_url) {
+                        setErrors({...errors, base_url: ''});
+                      }
+                    }}
+                    style={{
+                      width: '100%',
+                      padding: '8px 12px',
+                      border: errors.base_url ? '1px solid #ef4444' : '1px solid #e2e8f0',
+                      borderRadius: '4px',
+                      fontSize: '14px'
+                    }}
+                    placeholder="https://api.openai.com/v1"
+                  />
+                  {errors.base_url && (
+                    <div style={{ color: '#ef4444', fontSize: '12px', marginTop: '4px' }}>
+                      {errors.base_url}
+                    </div>
+                  )}
+                </div>
+                <div style={{ flex: 1 }}>
+                  <label style={{ display: 'block', marginBottom: '4px', fontSize: '14px', fontWeight: '500', color: '#374151' }}>
+                    Model
+                  </label>
+                  <input
+                    type="text"
+                    value={newProvider.model || ''}
+                    onChange={(e) => {
+                      setNewProvider({...newProvider, model: e.target.value});
+                      if (errors.model) {
+                        setErrors({...errors, model: ''});
+                      }
+                    }}
+                    style={{
+                      width: '100%',
+                      padding: '8px 12px',
+                      border: errors.model ? '1px solid #ef4444' : '1px solid #e2e8f0',
+                      borderRadius: '4px',
+                      fontSize: '14px'
+                    }}
+                    placeholder="gpt-4"
+                  />
+                  {errors.model && (
+                    <div style={{ color: '#ef4444', fontSize: '12px', marginTop: '4px' }}>
+                      {errors.model}
+                    </div>
+                  )}
+                </div>
+              </div>
+              <div style={{ display: 'flex', gap: '12px' }}>
+                <div style={{ flex: 1 }}>
+                  <label style={{ display: 'block', marginBottom: '4px', fontSize: '14px', fontWeight: '500', color: '#374151' }}>
+                    Temperature
+                  </label>
+                  <input
+                    type="number"
+                    value={newProvider.temperature || ''}
+                    onChange={(e) => {
+                      setNewProvider({...newProvider, temperature: parseFloat(e.target.value)});
+                      if (errors.temperature) {
+                        setErrors({...errors, temperature: ''});
+                      }
+                    }}
+                    step="0.1"
+                    min="0"
+                    max="2"
+                    style={{
+                      width: '100%',
+                      padding: '8px 12px',
+                      border: errors.temperature ? '1px solid #ef4444' : '1px solid #e2e8f0',
+                      borderRadius: '4px',
+                      fontSize: '14px'
+                    }}
+                  />
+                  {errors.temperature && (
+                    <div style={{ color: '#ef4444', fontSize: '12px', marginTop: '4px' }}>
+                      {errors.temperature}
+                    </div>
+                  )}
+                </div>
+                <div style={{ flex: 1 }}>
+                  <label style={{ display: 'block', marginBottom: '4px', fontSize: '14px', fontWeight: '500', color: '#374151' }}>
+                    Max Tokens
+                  </label>
+                  <input
+                    type="number"
+                    value={newProvider.max_tokens || ''}
+                    onChange={(e) => {
+                      setNewProvider({...newProvider, max_tokens: parseInt(e.target.value)});
+                      if (errors.max_tokens) {
+                        setErrors({...errors, max_tokens: ''});
+                      }
+                    }}
+                    style={{
+                      width: '100%',
+                      padding: '8px 12px',
+                      border: errors.max_tokens ? '1px solid #ef4444' : '1px solid #e2e8f0',
+                      borderRadius: '4px',
+                      fontSize: '14px'
+                    }}
+                  />
+                  {errors.max_tokens && (
+                    <div style={{ color: '#ef4444', fontSize: '12px', marginTop: '4px' }}>
+                      {errors.max_tokens}
+                    </div>
+                  )}
+                </div>
+              </div>
+              {newProvider.provider === 'openai_compatible' && (
+                <div>
+                  <label style={{ display: 'block', marginBottom: '4px', fontSize: '14px', fontWeight: '500', color: '#374151' }}>
+                    API Key
+                  </label>
+                  <input
+                    type="password"
+                    value={newProvider.api_key || ''}
+                    onChange={(e) => {
+                      setNewProvider({...newProvider, api_key: e.target.value});
+                      if (errors.api_key) {
+                        setErrors({...errors, api_key: ''});
+                      }
+                    }}
+                    style={{
+                      width: '100%',
+                      padding: '8px 12px',
+                      border: errors.api_key ? '1px solid #ef4444' : '1px solid #e2e8f0',
+                      borderRadius: '4px',
+                      fontSize: '14px'
+                    }}
+                    placeholder="sk-..."
+                  />
+                  {errors.api_key && (
+                    <div style={{ color: '#ef4444', fontSize: '12px', marginTop: '4px' }}>
+                      {errors.api_key}
+                    </div>
+                  )}
+                </div>
+              )}
+              <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '8px' }}>
+                <button
+                  onClick={cancelEdit}
+                  style={{
+                    padding: '8px 16px',
+                    border: '1px solid #e2e8f0',
+                    backgroundColor: 'white',
+                    borderRadius: '6px',
+                    fontSize: '14px',
+                    color: '#64748b',
+                    cursor: 'pointer'
+                  }}
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={editingProvider ? updateProvider : addProvider}
+                  style={{
+                    padding: '8px 16px',
+                    backgroundColor: '#3b82f6',
+                    color: 'white',
+                    border: 'none',
+                    borderRadius: '6px',
+                    fontSize: '14px',
+                    fontWeight: '500',
+                    cursor: 'pointer'
+                  }}
+                >
+                  {editingProvider ? 'Update Provider' : 'Add Provider'}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {error && (
+          <div style={{
+            backgroundColor: '#fef2f2',
+            border: '1px solid #fecaca',
+            borderRadius: '6px',
+            padding: '12px',
+            color: '#dc2626',
+            fontSize: '14px'
+          }}>
+            {error}
+          </div>
+        )}
+
+        {loading ? (
+          <div style={{ textAlign: 'center', padding: '40px', color: '#64748b' }}>
+            Loading LLM providers...
+          </div>
+        ) : (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+            {providers.map((provider) => (
+              <div key={provider.alias} style={{
+                backgroundColor: 'white',
+                border: '1px solid #e2e8f0',
+                borderRadius: '12px',
+                padding: '20px',
+                boxShadow: '0 1px 3px rgba(0,0,0,0.05)',
+                transition: 'all 150ms ease',
+                position: 'relative'
+              }}
+              onMouseOver={(e) => {
+                e.currentTarget.style.borderColor = '#3b82f6';
+                e.currentTarget.style.boxShadow = '0 4px 6px -1px rgba(59, 130, 246, 0.1)';
+              }}
+              onMouseOut={(e) => {
+                e.currentTarget.style.borderColor = '#e2e8f0';
+                e.currentTarget.style.boxShadow = '0 1px 3px rgba(0,0,0,0.05)';
+              }}>
+                <div style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'flex-start'
+                }}>
+                  <div style={{ flex: 1 }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '8px' }}>
+                      <h4 style={{ margin: 0, color: '#1e293b', fontSize: '16px' }}>
+                        {provider.name} ({provider.alias})
+                      </h4>
+                      <span style={{
+                        padding: '2px 8px',
+                        backgroundColor: '#f1f5f9',
+                        color: '#475569',
+                        borderRadius: '12px',
+                        fontSize: '11px',
+                        fontWeight: '500'
+                      }}>
+                        {provider.provider === 'ollama' ? 'Ollama' : 'OpenAI Compatible'}
+                      </span>
+                    </div>
+                    <div style={{ fontSize: '13px', color: '#64748b', lineHeight: '1.5' }}>
+                      <div><strong>Model:</strong> {provider.model}</div>
+                      <div><strong>URL:</strong> {provider.base_url}</div>
+                      <div><strong>Temperature:</strong> {provider.temperature}</div>
+                      <div><strong>Max Tokens:</strong> {provider.max_tokens || 'Not set'}</div>
+                      {provider.think && <div><strong>Think Mode:</strong> Enabled</div>}
+                    </div>
+                  </div>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                    <div style={{ display: 'flex', gap: '8px' }}>
+                      <button
+                        onClick={() => startEditProvider(provider)}
+                        style={{
+                          padding: '4px 8px',
+                          border: '1px solid #e2e8f0',
+                          backgroundColor: 'white',
+                          borderRadius: '4px',
+                          fontSize: '12px',
+                          color: '#64748b',
+                          cursor: 'pointer'
+                        }}
+                      >
+                        Edit
+                      </button>
+                      <button
+                        onClick={() => deleteProvider(provider.alias)}
+                        style={{
+                          padding: '4px 8px',
+                          border: '1px solid #ef4444',
+                          backgroundColor: 'white',
+                          borderRadius: '4px',
+                          fontSize: '12px',
+                          color: '#ef4444',
+                          cursor: 'pointer'
+                        }}
+                      >
+                        Delete
+                      </button>
+                    </div>
+                    <button
+                      onClick={() => testProvider(provider)}
+                      disabled={testingProvider === provider.alias}
+                      style={{
+                        padding: '4px 8px',
+                        border: testingProvider === provider.alias ? '1px solid #94a3b8' : '1px solid #10b981',
+                        backgroundColor: testingProvider === provider.alias ? '#f1f5f9' : 'white',
+                        borderRadius: '4px',
+                        fontSize: '12px',
+                        color: testingProvider === provider.alias ? '#94a3b8' : '#10b981',
+                        cursor: testingProvider === provider.alias ? 'not-allowed' : 'pointer',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '4px'
+                      }}
+                    >
+                      {testingProvider === provider.alias ? (
+                        <>
+                          <div style={{
+                            width: '12px',
+                            height: '12px',
+                            border: '2px solid #10b981',
+                            borderTop: '2px solid transparent',
+                            borderRadius: '50%',
+                            animation: 'spin 1s linear infinite'
+                          }}></div>
+                          Testing...
+                        </>
+                      ) : (
+                        'Test Connection'
+                      )}
+                    </button>
+                    {testResults[provider.alias] && (
+                      <div style={{
+                        padding: '4px 8px',
+                        borderRadius: '4px',
+                        fontSize: '11px',
+                        backgroundColor: testResults[provider.alias].success ? '#dcfce7' : '#fef2f2',
+                        border: `1px solid ${testResults[provider.alias].success ? '#22c55e' : '#ef4444'}`,
+                        color: testResults[provider.alias].success ? '#166534' : '#991b1b'
+                      }}>
+                        {testResults[provider.alias].success ? (
+                          <>
+                            ✓ {testResults[provider.alias].response_time_ms}ms
+                          </>
+                        ) : (
+                          <>
+                            ✗ {testResults[provider.alias].error || 'Test failed'}
+                          </>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+            ))}
+            {providers.length === 0 && (
+              <div style={{
+                textAlign: 'center',
+                padding: '60px 40px',
+                color: '#64748b',
+                backgroundColor: 'linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%)',
+                borderRadius: '16px',
+                border: '2px dashed #cbd5e1'
+              }}>
+                <div style={{
+                  width: '80px',
+                  height: '80px',
+                  backgroundColor: '#e0f2fe',
+                  borderRadius: '50%',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  margin: '0 auto 20px',
+                  fontSize: '32px'
+                }}>🤖</div>
+                <h3 style={{ margin: '0 0 12px 0', color: '#1e293b', fontSize: '20px', fontWeight: '600' }}>
+                  No LLM Providers Yet
+                </h3>
+                <p style={{ margin: '0 0 24px 0', fontSize: '16px', lineHeight: '1.5' }}>
+                  Add your first LLM provider to start configuring AI models for your tasks
+                </p>
+                <button
+                  onClick={() => setShowAddForm(true)}
+                  style={{
+                    padding: '12px 32px',
+                    backgroundColor: '#3b82f6',
+                    color: 'white',
+                    border: 'none',
+                    borderRadius: '8px',
+                    fontSize: '16px',
+                    fontWeight: '600',
+                    cursor: 'pointer',
+                    boxShadow: '0 4px 6px rgba(59, 130, 246, 0.2)',
+                    transition: 'all 150ms ease'
+                  }}
+                  onMouseOver={(e) => {
+                    e.currentTarget.style.backgroundColor = '#2563eb';
+                    e.currentTarget.style.transform = 'translateY(-2px)';
+                    e.currentTarget.style.boxShadow = '0 8px 12px rgba(59, 130, 246, 0.3)';
+                  }}
+                  onMouseOut={(e) => {
+                    e.currentTarget.style.backgroundColor = '#3b82f6';
+                    e.currentTarget.style.transform = 'translateY(0px)';
+                    e.currentTarget.style.boxShadow = '0 4px 6px rgba(59, 130, 246, 0.2)';
+                  }}
+                >
+                  🚀 Add Your First Provider
+                </button>
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+export default SettingsPage;

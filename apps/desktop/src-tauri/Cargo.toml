@@ -1,0 +1,30 @@
+[package]
+name = "pulsar-studio"
+version = "0.1.0"
+description = "Pulsar Studio - Desktop GUI for Pulsar Agent"
+authors = ["Pulsar Studio Contributors"]
+license = "MIT"
+repository = "https://github.com/pulsar-agent-turbo/pulsar-studio"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[build-dependencies]
+tauri-build = { version = "1.5.0", features = [] }
+
+[dependencies]
+tauri = { version = "1.5.0", features = [ "fs-remove-file", "window-start-dragging", "window-minimize", "window-hide", "fs-rename-file", "dialog-save", "window-maximize", "dialog-open", "notification-all", "window-close", "path-all", "fs-read-file", "window-show", "fs-remove-dir", "shell-open", "fs-copy-file", "window-unmaximize", "fs-create-dir", "window-unminimize", "fs-read-dir", "fs-write-file", "fs-exists"] }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+tokio = { version = "1.0", features = ["full"] }
+uuid = { version = "1.0", features = ["v4"] }
+dirs = "5.0"
+chrono = { version = "0.4", features = ["serde"] }
+
+[package.metadata.bundle]
+icon = ["icons/icon.png"]
+
+[features]
+# this feature is used for production builds or when `devPath` points to the filesystem
+# DO NOT REMOVE!!
+custom-protocol = ["tauri/custom-protocol"]

@@ -1,0 +1,30 @@
+{
+  "meta": {
+    "name": "Software Development Guide",
+    "version": "1.0.0",
+    "domain": "development"
+  },
+  "entries": [
+    {
+      "name": "Project Setup",
+      "description": "Initial project configuration and setup",
+      "plan": [
+        "Create project structure",
+        "Configure development environment",
+        "Set up version control",
+        "Install dependencies"
+      ]
+    },
+    {
+      "name": "Feature Development",
+      "description": "Develop new features incrementally",
+      "plan": [
+        "Analyze requirements",
+        "Design solution approach",
+        "Implement core functionality",
+        "Write tests",
+        "Review and refactor"
+      ]
+    }
+  ]
+}

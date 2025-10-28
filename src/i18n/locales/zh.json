@@ -1,0 +1,70 @@
+{
+  "app": {
+    "title": "脉冲工作室"
+  },
+  "sidebar": {
+    "working": "工作区",
+    "settings": "设置",
+    "guides": "指南",
+    "knowledge": "知识库",
+    "actions": "动作"
+  },
+  "settings": {
+    "title": "设置",
+    "llm": {
+      "title": "LLM 提供商",
+      "addInstance": "添加实例",
+      "selectProvider": "选择提供商",
+      "providerName": "提供商名称",
+      "baseUrl": "基础 URL",
+      "apiKey": "API 密钥",
+      "model": "模型",
+      "temperature": "温度",
+      "maxTokens": "最大令牌数",
+      "timeout": "超时（秒）",
+      "enableThinking": "启用思考",
+      "save": "保存",
+      "cancel": "取消",
+      "edit": "编辑",
+      "delete": "删除",
+      "deleteConfirm": "您确定要删除此实例吗？",
+      "test": "测试连接",
+      "testSuccess": "连接成功！",
+      "testFailed": "连接失败：{{error}}",
+      "instances": {
+        "openai": "OpenAI",
+        "ollama": "Ollama",
+        "anthropic": "Anthropic",
+        "custom": "自定义"
+      }
+    },
+    "appearance": {
+      "title": "外观与语言",
+      "language": "语言",
+      "theme": "主题",
+      "themeOptions": {
+        "light": "浅色",
+        "dark": "深色",
+        "system": "跟随系统"
+      },
+      "languageOptions": {
+        "en": "English",
+        "zh": "中文"
+      }
+    }
+  },
+  "common": {
+    "loading": "加载中...",
+    "error": "错误",
+    "success": "成功",
+    "save": "保存",
+    "cancel": "取消",
+    "confirm": "确认",
+    "delete": "删除",
+    "edit": "编辑",
+    "add": "添加",
+    "search": "搜索",
+    "clear": "清除",
+    "close": "关闭"
+  }
+}

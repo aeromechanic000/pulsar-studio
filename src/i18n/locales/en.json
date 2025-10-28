@@ -1,0 +1,70 @@
+{
+  "app": {
+    "title": "Pulsar Studio"
+  },
+  "sidebar": {
+    "working": "Working",
+    "settings": "Settings",
+    "guides": "Guides",
+    "knowledge": "Knowledge",
+    "actions": "Actions"
+  },
+  "settings": {
+    "title": "Settings",
+    "llm": {
+      "title": "LLM Providers",
+      "addInstance": "Add Instance",
+      "selectProvider": "Select Provider",
+      "providerName": "Provider Name",
+      "baseUrl": "Base URL",
+      "apiKey": "API Key",
+      "model": "Model",
+      "temperature": "Temperature",
+      "maxTokens": "Max Tokens",
+      "timeout": "Timeout (seconds)",
+      "enableThinking": "Enable Thinking",
+      "save": "Save",
+      "cancel": "Cancel",
+      "edit": "Edit",
+      "delete": "Delete",
+      "deleteConfirm": "Are you sure you want to delete this instance?",
+      "test": "Test Connection",
+      "testSuccess": "Connection successful!",
+      "testFailed": "Connection failed: {{error}}",
+      "instances": {
+        "openai": "OpenAI",
+        "ollama": "Ollama",
+        "anthropic": "Anthropic",
+        "custom": "Custom"
+      }
+    },
+    "appearance": {
+      "title": "Appearance & Language",
+      "language": "Language",
+      "theme": "Theme",
+      "themeOptions": {
+        "light": "Light",
+        "dark": "Dark",
+        "system": "System"
+      },
+      "languageOptions": {
+        "en": "English",
+        "zh": "中文"
+      }
+    }
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success",
+    "save": "Save",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "delete": "Delete",
+    "edit": "Edit",
+    "add": "Add",
+    "search": "Search",
+    "clear": "Clear",
+    "close": "Close"
+  }
+}

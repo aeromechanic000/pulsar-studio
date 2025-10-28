@@ -1,0 +1,323 @@
+{
+  "app": {
+    "title": "脉冲工作室"
+  },
+  "sidebar": {
+    "working": "工作区",
+    "settings": "设置",
+    "guides": "指南",
+    "knowledge": "知识库",
+    "actions": "动作",
+    "threads": "线程",
+    "newThread": "+ 新建",
+    "noThreadsYet": "尚无线程。创建一个以开始。",
+    "createFirstThread": "使用上方的按钮创建您的第一个代理线程。",
+    "expandSidebar": "展开侧边栏",
+    "collapseSidebar": "折叠侧边栏",
+    "createNewThread": "创建新线程"
+  },
+  "settings": {
+    "title": "设置",
+    "llm": {
+      "title": "LLM 提供商",
+      "addInstance": "添加实例",
+      "selectProvider": "选择提供商",
+      "providerName": "提供商名称",
+      "baseUrl": "基础 URL",
+      "apiKey": "API 密钥",
+      "model": "模型",
+      "temperature": "温度",
+      "maxTokens": "最大令牌数",
+      "timeout": "超时（秒）",
+      "enableThinking": "启用思考",
+      "save": "保存",
+      "cancel": "取消",
+      "edit": "编辑",
+      "delete": "删除",
+      "deleteConfirm": "您确定要删除此实例吗？",
+      "test": "测试连接",
+      "testSuccess": "连接成功！",
+      "testFailed": "连接失败：{{error}}",
+      "instances": {
+        "openai": "OpenAI",
+        "ollama": "Ollama",
+        "anthropic": "Anthropic",
+        "custom": "自定义"
+      }
+    },
+    "appearance": {
+      "title": "外观与语言",
+      "language": "语言",
+      "theme": "主题",
+      "themeOptions": {
+        "light": "浅色",
+        "dark": "深色",
+        "system": "跟随系统"
+      },
+      "languageOptions": {
+        "en": "English",
+        "zh": "中文"
+      }
+    }
+  },
+  "common": {
+    "loading": "加载中...",
+    "error": "错误",
+    "success": "成功",
+    "save": "保存",
+    "cancel": "取消",
+    "confirm": "确认",
+    "delete": "删除",
+    "edit": "编辑",
+    "add": "添加",
+    "search": "搜索",
+    "clear": "清除",
+    "close": "关闭"
+  },
+  "ui": {
+    "loadingInstances": "正在加载 LLM 实例...",
+    "noInstancesYet": "尚无 LLM 实例",
+    "addFirstInstance": "添加您的第一个 LLM 实例以开始为您的任务配置 AI 模型",
+    "themeDescriptions": {
+      "system": "主题将自动匹配您的系统偏好（浅色/深色模式）。",
+      "dark": "深色主题已启用。在低光环境中可能对眼睛更舒适。",
+      "light": "浅色主题已启用。这提供了一个明亮、干净的界面。"
+    },
+    "taskAndPlan": "任务与计划",
+    "noActiveTask": "无活动任务",
+    "selectOrCreateThread": "选择或创建一个线程以开始处理任务。",
+    "generatedFiles": "生成的文件",
+    "noFilesGenerated": "尚未生成文件",
+    "filesWillAppearHere": "代理创建的文件将在此处显示，方便访问。"
+  },
+  "workingPage": {
+    "welcome": "欢迎来到脉冲工作室",
+    "welcomeSubtitle": "您的 AI 驱动开发助手",
+    "createFirstThread": "创建您的第一个线程",
+    "readyForRequest": "准备好接受您的第一个请求",
+    "noThreadsMessage": "尚无线程。创建一个以开始。",
+    "createThreadDescription": "与 AI 助手开始新的对话线程。",
+    "configuration": {
+      "title": "配置",
+      "mode": "模式",
+      "plannerLLM": "规划器 LLM",
+      "deciderLLM": "决策器 LLM",
+      "workingDirectory": "工作目录",
+      "knowledge": "知识库",
+      "guides": "指南",
+      "actions": "动作",
+      "interactive": "交互式",
+      "auto": "自动",
+      "noKnowledgeSelected": "未选择知识库",
+      "noGuidesSelected": "未选择指南",
+      "noActionsSelected": "未选择动作"
+    },
+    "chat": {
+      "placeholder": "您今天想要完成什么？",
+      "send": "发送",
+      "processing": "处理中...",
+      "error": "错误",
+      "retry": "重试",
+      "stop": "停止"
+    },
+    "status": {
+      "idle": "就绪",
+      "planning": "规划中...",
+      "executing": "执行中...",
+      "completed": "已完成",
+      "failed": "失败"
+    }
+  },
+  "knowledgePage": {
+    "title": "知识库",
+    "subtitle": "管理您的知识条目和文档",
+    "addKnowledge": "+ 添加知识",
+    "noKnowledge": "无知识条目",
+    "createFirstKnowledge": "创建您的第一个知识条目",
+    "createFirstKnowledgeDescription": "添加文档、参考资料和 AI 可用于帮助您完成任务的信息。",
+    "loading": "正在加载知识库...",
+    "entries": {
+      "count_one": "{{count}} 个条目",
+      "count_other": "{{count}} 个条目"
+    },
+    "form": {
+      "createTitle": "创建新知识",
+      "editTitle": "编辑知识",
+      "name": "名称",
+      "version": "版本",
+      "domain": "领域",
+      "information": "知识信息",
+      "entries": "知识条目",
+      "addEntry": "+ 添加条目",
+      "entryName": "条目名称",
+      "entryDescription": "条目描述",
+      "entryContent": "条目内容",
+      "preview": "预览",
+      "characters": "字符",
+      "noEntriesYet": "尚无条目。点击\"添加条目\"创建您的第一个知识条目。"
+    },
+    "modal": {
+      "cancel": "取消",
+      "save": "保存知识",
+      "deleteConfirm": "您确定要删除此知识条目吗？",
+      "deleteSuccess": "知识删除成功",
+      "saveSuccess": "知识保存成功"
+    }
+  },
+  "actionsPage": {
+    "title": "可用动作",
+    "subtitle": "管理和监控代理的可用动作",
+    "importAction": "+ 导入动作",
+    "noActions": "未导入动作",
+    "importFirstAction": "导入您的第一个动作",
+    "importFirstActionDescription": "导入代理可用于执行任务的动作目录。",
+    "loading": "正在加载动作...",
+    "search": "按名称或描述搜索动作...",
+    "actionsFound": "找到 {{count}} 个动作",
+    "noActionsMatch": "无匹配动作",
+    "noMatchDescription": "尝试调整您的搜索或筛选条件",
+    "filter": {
+      "all": "所有状态",
+      "healthy": "健康",
+      "error": "错误",
+      "disabled": "已禁用"
+    },
+    "status": {
+      "healthy": "✅ 健康",
+      "error": "❌ 错误",
+      "disabled": "⚠️ 已禁用",
+      "clearError": "清除错误"
+    },
+    "details": {
+      "name": "名称",
+      "description": "描述",
+      "arguments": "参数",
+      "timeout": "超时",
+      "tags": "标签",
+      "status": "状态",
+      "lastChecked": "最后检查",
+      "version": "版本",
+      "lastError": "最后错误",
+      "directory": "目录",
+      "errors": "错误",
+      "type": "类型"
+    },
+    "modal": {
+      "delete": "删除动作",
+      "deleteConfirm": "您确定要删除动作'{{actionName}}'吗？这将移除整个动作目录且无法撤销。",
+      "deleteAction": "删除动作",
+      "deleteSuccess": "动作删除成功",
+      "clearErrorSuccess": "错误清除成功"
+    }
+  },
+  "guidesPage": {
+    "title": "规划指南",
+    "subtitle": "为复杂任务配置规划指南",
+    "addGuide": "+ 添加指南",
+    "noGuides": "无规划指南",
+    "createFirstGuide": "创建您的第一个规划指南",
+    "createFirstGuideDescription": "创建结构化指南，帮助 AI 规划和执行复杂的多步骤任务。",
+    "loading": "正在加载指南...",
+    "entries": {
+      "count_one": "{{count}} 个条目",
+      "count_other": "{{count}} 个条目"
+    },
+    "form": {
+      "createTitle": "创建新指南",
+      "editTitle": "编辑指南",
+      "name": "名称",
+      "version": "版本",
+      "domain": "领域",
+      "information": "指南信息",
+      "entries": "指南条目",
+      "addEntry": "+ 添加条目",
+      "addStep": "+ 添加步骤",
+      "entryName": "条目名称",
+      "entryDescription": "条目描述",
+      "planningSteps": "规划步骤",
+      "stepDescription": "步骤描述",
+      "moveUp": "上移",
+      "moveDown": "下移",
+      "removeStep": "删除步骤"
+    },
+    "modal": {
+      "cancel": "取消",
+      "save": "保存指南",
+      "deleteConfirm": "您确定要删除此指南吗？",
+      "deleteSuccess": "指南删除成功",
+      "saveSuccess": "指南保存成功"
+    }
+  },
+  "forms": {
+    "name": "名称",
+    "version": "版本",
+    "domain": "领域",
+    "description": "描述",
+    "required": "必填",
+    "optional": "可选",
+    "save": "保存",
+    "cancel": "取消",
+    "edit": "编辑",
+    "delete": "删除",
+    "add": "添加",
+    "remove": "移除",
+    "create": "创建",
+    "update": "更新"
+  },
+  "modals": {
+    "create": "创建新的",
+    "edit": "编辑",
+    "delete": "删除",
+    "confirm": "确认",
+    "success": "成功",
+    "error": "错误",
+    "close": "关闭",
+    "cancel": "取消",
+    "save": "保存",
+    "loading": "加载中...",
+    "processing": "处理中..."
+  },
+  "validation": {
+    "required": "此字段为必填项",
+    "invalidName": "请输入有效的名称",
+    "invalidVersion": "请输入有效的版本",
+    "minLength": "至少需要 {{min}} 个字符",
+    "maxLength": "不能超过 {{max}} 个字符"
+  },
+  "threadConfig": {
+    "createTitle": "创建新线程",
+    "editTitle": "配置线程",
+    "threadName": "线程名称",
+    "threadNamePlaceholder": "为此线程输入一个描述性名称",
+    "selectPlannerLLM": "选择用于规划的 LLM",
+    "selectDeciderLLM": "选择用于决策的 LLM",
+    "workingDirectory": "工作目录",
+    "workingDirectoryPlaceholder": "输入工作目录路径",
+    "browse": "浏览",
+    "knowledgeSources": "知识来源",
+    "planningGuides": "规划指南",
+    "availableActions": "可用动作",
+    "noKnowledgeTitle": "无可用知识来源",
+    "noKnowledgeDescription": "在知识页面创建知识条目，为您的代理提供上下文信息。",
+    "noGuidesTitle": "无可用规划指南",
+    "noGuidesDescription": "在指南页面创建规划指南，帮助您的代理有效构建复杂任务。",
+    "noActionsTitle": "无可用动作",
+    "noActionsDescription": "在动作页面导入动作目录，为您的代理提供可执行能力。",
+    "goToKnowledge": "前往知识库",
+    "goToGuides": "前往指南",
+    "goToActions": "前往动作",
+    "plannerLLMDesc": "此 LLM 将用于创建和更新计划",
+    "deciderLLMDesc": "此 LLM 将用于选择下一个动作和决策",
+    "directoryAccessible": "目录可访问，具有完全权限",
+    "directoryValidationFailed": "目录验证失败",
+    "selectDirectory": "选择工作目录",
+    "requiredFields": "* 必填字段",
+    "alerts": {
+      "fillRequiredFields": "请填写所有必填字段",
+      "selectWorkingDirectory": "请选择工作目录",
+      "selectValidDirectory": "请选择具有写权限的有效工作目录",
+      "saveFailed": "保存配置失败",
+      "directoryBrowseFailed": "打开目录浏览器失败"
+    }
+  }
+}

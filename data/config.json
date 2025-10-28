@@ -1,0 +1,27 @@
+{
+  "llm_providers": [
+    {
+      "name": "GPT-4",
+      "provider": "openai_compatible",
+      "base_url": "https://api.openai.com/v1",
+      "model": "gpt-4",
+      "api_key": null,
+      "temperature": 0.7,
+      "max_tokens": 4000,
+      "think": false,
+      "alias": "gpt-4"
+    },
+    {
+      "name": "Local Ollama",
+      "provider": "ollama",
+      "base_url": "http://localhost:11434",
+      "model": "llama3.2:3b",
+      "api_key": null,
+      "temperature": 0.5,
+      "max_tokens": 2000,
+      "think": true,
+      "alias": "local-llama"
+    }
+  ],
+  "data_root": "/Users/nil/.pulsar-studio"
+}

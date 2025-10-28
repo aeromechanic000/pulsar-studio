@@ -1,0 +1,24 @@
+{
+  "meta": {
+    "name": "Software Development Knowledge",
+    "version": "1.0.0",
+    "domain": "development"
+  },
+  "entries": [
+    {
+      "name": "React Best Practices",
+      "description": "Essential practices for React development",
+      "content": "Use functional components with hooks, follow component composition patterns, implement proper error handling, use React.memo for performance optimization, follow proper state management patterns."
+    },
+    {
+      "name": "TypeScript Guidelines",
+      "description": "TypeScript development standards and conventions",
+      "content": "Use strict type checking, prefer interfaces over types for object shapes, use generics for reusable code, avoid 'any' type, implement proper error boundaries, use type guards for runtime type checking."
+    },
+    {
+      "name": "Git Workflow",
+      "description": "Version control best practices and workflows",
+      "content": "Use feature branches for new development, write clear commit messages, use pull requests for code review, maintain clean commit history, resolve conflicts properly, use semantic versioning."
+    }
+  ]
+}
