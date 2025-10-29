@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
 import { useAppStore } from '../stores/useAppStore';
 import { useActionStore } from '../stores/useActionStore';
 import { ThreadConfig, DirectoryPermissionResult } from '../types';
@@ -21,6 +22,7 @@ export const ThreadConfigModal: React.FC<ThreadConfigModalProps> = ({
   existingConfig
 }) => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const { llm_configs, guides, knowledge } = useAppStore();
   const { getAvailableActions } = useActionStore();
 
@@ -462,7 +464,7 @@ export const ThreadConfigModal: React.FC<ThreadConfigModalProps> = ({
                   onAction={() => {
                     // Close modal and navigate to knowledge page
                     onClose();
-                    // You could add navigation logic here if needed
+                    navigate('/knowledge');
                   }}
                 />
               ) : (
@@ -501,7 +503,7 @@ export const ThreadConfigModal: React.FC<ThreadConfigModalProps> = ({
                   onAction={() => {
                     // Close modal and navigate to guides page
                     onClose();
-                    // You could add navigation logic here if needed
+                    navigate('/guides');
                   }}
                 />
               ) : (
@@ -542,7 +544,7 @@ export const ThreadConfigModal: React.FC<ThreadConfigModalProps> = ({
                     onAction={() => {
                       // Close modal and navigate to actions page
                       onClose();
-                      // You could add navigation logic here if needed
+                      navigate('/actions');
                     }}
                   />
                 ) : (

@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
 import { BriefcaseIcon, GearIcon, BookIcon, BrainIcon, TargetIcon } from './Icons';
 import { useAppStore } from '../stores/useAppStore';
 
@@ -8,6 +9,7 @@ import { useAppStore } from '../stores/useAppStore';
 const Sidebar: React.FC = () => {
   const { t } = useTranslation();
   const location = useLocation();
+  const navigate = useNavigate();
   const {
     threads,
     selected_thread_id,
@@ -21,11 +23,15 @@ const Sidebar: React.FC = () => {
   } = useAppStore();
 
   const handleCreateThreadClicked = () => {
-    setStatusMessage('Sidebar Create Thread button clicked! Testing if click works.');
+    setStatusMessage('Create Thread.');
     console.log('Sidebar Create Thread button clicked!');
-    setShowThreadModal(true);
-    // Clear status message after 3 seconds
-    setTimeout(() => setStatusMessage(undefined), 3000);
+    if (location.pathname === '/') {
+      setShowThreadModal(true);
+    } else {
+      navigate('/');
+      setTimeout(() => setShowThreadModal(true), 300);
+    }
+    setTimeout(() => setStatusMessage("Ready to create a new thread."), 3000);
   };
 
   const navItems = [
